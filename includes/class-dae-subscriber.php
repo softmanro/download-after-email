@@ -23,25 +23,19 @@ class DAE_Subscriber {
         $table_subscribermeta = $wpdb->prefix . 'dae_subscribermeta';
         $table_links = $wpdb->prefix . 'dae_links';
 
-        $subscriber_id = (int) $subscriber;
+        $subscriber_email = sanitize_email( $subscriber );
 
-        if ( ! $subscriber_id ) {
-            
-            $subscriber_email = sanitize_email( $subscriber );
-
-            if ( empty( $subscriber_email ) ) {
-                return false;
-            }
-
-            $subscribermeta_row = $wpdb->get_row( $wpdb->prepare( "SELECT subscriber_id FROM $table_subscribermeta WHERE meta_value = %s LIMIT 1", $subscriber_email ) );
-
-            if ( empty( $subscribermeta_row ) ) {
-                return false;
-            }
-
-            $subscriber_id = (int) $subscribermeta_row->subscriber_id;
-
+        if ( empty( $subscriber_email ) ) {
+            return false;
         }
+
+        $subscribermeta_row = $wpdb->get_row( $wpdb->prepare( "SELECT subscriber_id FROM $table_subscribermeta WHERE meta_value = %s LIMIT 1", $subscriber_email ) );
+
+        if ( empty( $subscribermeta_row ) ) {
+            return false;
+        }
+
+        $subscriber_id = (int) $subscribermeta_row->subscriber_id;
 
         $subscribermeta = $wpdb->get_results( $wpdb->prepare( "SELECT meta_key, meta_value FROM $table_subscribermeta WHERE subscriber_id = %d", $subscriber_id ) );
         $links = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $table_links WHERE subscriber_id = %d", $subscriber_id ) );

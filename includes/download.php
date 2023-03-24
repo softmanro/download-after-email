@@ -55,6 +55,8 @@ function dae_download_file() {
 
         DAE_Subscriber::update_link( $subscriber->id, $download_hash );
 
+    } else {
+        die( ! empty( $messages['download_failed'] ) ? esc_html( $messages['download_failed'] ) : esc_html__( 'This download file could not be found. If this error persists, please feel free to contact me.', 'download-after-email' ) );
     }
 
     $ok = false;
